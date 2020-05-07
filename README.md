@@ -28,13 +28,13 @@
   - All the above CRUD operations should be exposed as REST endpoints
   - _Programming language_: 
   	- [ ] NodeJS
-	- [ ] Golang
+	- [x] Golang
 	- [ ] Python
   - _Database_: 
   	- [ ] MySQL
-	- [ ] Postgresql
+	- [x] Postgresql
 	- [ ] MariaDB
-	- [ ] SQLite
+	- [x] SQLite (For unit tests)
 	- [ ] MS SQL
   - _Framework_: We don’t care as long it serves the above three pointers. We would love to see if you can implement in Erlang or Rust. 
 
@@ -42,19 +42,19 @@
 ##  We are not looking for UI implmentation of the board 
 
 #### Our expectations when you say your code is ready:
-  - [ ] Write all the APIs visualizing if there is a Trello board UI for this. We are not expecting any UI components
-  - [ ] Quality code standards. Hope you have done lint check before pushing the code. No one likes to hear, "I didn't have time so..".
-  - [ ] Apt input validations. Think from the end user perspective(username contains only alphanumerics, email satisfies the standard regex pattern, etc.,). They say "Something went wrong, please try again" shows laziness of a developer, so don't be one. More your code breaks, more we lose trust on your quality.
-  - [ ] (Optional Task) Tests. Be it Unit or Integration or API tests. At least one of them because only your tests can assure your code is working. 
+  - [x] Write all the APIs visualizing if there is a Trello board UI for this. We are not expecting any UI components
+  - [x] Quality code standards. Hope you have done lint check before pushing the code. No one likes to hear, "I didn't have time so..".
+  - [x] Apt input validations. Think from the end user perspective(username contains only alphanumerics, email satisfies the standard regex pattern, etc.,). They say "Something went wrong, please try again" shows laziness of a developer, so don't be one. More your code breaks, more we lose trust on your quality.
+  - [x] (Optional Task) Tests. Be it Unit or Integration or API tests. At least one of them because only your tests can assure your code is working. 
   - Update documentation in README.md file for us which should have the following
-		○ [ ] How to build and run your code
-		○ [ ] What are the assumptions you have made during development
-		○ [x] Checkmark these expectations when you have finished them
+	 - [x] How to build and run your code
+	 - [x] What are the assumptions you have made during development
+	 - [x] Checkmark these expectations when you have finished them
 	
 
 #### We'd be really impressed if you include at-least one of the following below along with fulfilling our above expectations:
-  - [ ] Dockerize your code.
-  - [ ] Generate Open API documentation using Swagger or related(Postman collection, etc.,)
+  - [x] Dockerize your code.
+  - [x] Generate Open API documentation using Swagger or related(Postman collection, etc.,)
   - [ ] Covered 99.99% possible cases without errors and introduce new use-cases wherever "necessary" -- True traits of 10x developer :P
   - [ ] Build admin panel UI for it using any frontend framework.
   
@@ -69,5 +69,60 @@
 
  
 _In case of any queries, mail to Karthikeyan NG <karthikeyan.ng@sequoia.com> or Indrajeet Kumar <indrajeet@sequoia.com>. We'll revert to you with the clarifications_
- 
- 
+
+## Submission
+
+### Assumptions
+
+// TODO:
+
+### Run
+
+If running only once, use `docker-compose`. It will setup PostgreSQL and pgadmin.
+
+```shell
+docker-compose up -d
+docker-compose logs -f app
+```
+
+If planning to run it every 2 mins during development, run required services from
+`docker-compose` and use `make`
+
+```shell
+docker-compose up -d postgres pgadmin
+make run
+```
+
+### Unit tests
+
+The following will run all the unit tests located in `./pkg/**/*`.
+
+```shell
+make test
+```
+
+### Build
+
+#### Binary
+
+The following will output the built binary at `./build/app`
+
+```shell
+make binary
+```
+
+#### Docker image
+
+The following will tag the image as `backend-assignment`
+
+```shell
+make docker
+```
+
+### Generate Swagger spec
+
+Swagger spec is generated from annotations in comments. See [docs](https://goswagger.io/use/spec.html).
+
+```shell
+make generate
+```

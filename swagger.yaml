@@ -1,0 +1,26 @@
+basePath: /v1
+consumes:
+- application/json
+host: localhost:3000
+info:
+  contact:
+    email: ashutoshgngwr@gmail.com
+    name: Ashutosh Gangwar
+    url: https://ashutoshgngwr.github.io
+  description: APIs for a simple trello board application to manage users and their
+    tasks.
+  license:
+    name: Proprietary
+  title: backend-assignment
+  version: 1.0.0
+paths: {}
+produces:
+- application/json
+schemes:
+- http
+securityDefinitions:
+  api_key:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

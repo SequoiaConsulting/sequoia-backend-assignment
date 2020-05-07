@@ -1,0 +1,48 @@
+version: "3.5"
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:9.6.17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:4.21
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+
+  app:
+    container_name: app
+    image: backend-assignment:latest
+    build: .
+    environment:
+      PG_HOST: postgres
+      PG_PORT: "5432"
+      PG_USER: postgres
+      PG_PASSWORD: password
+      PG_DBNAME: postgres
+      PG_SSLMODE: disable
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres:
+  pgadmin:
