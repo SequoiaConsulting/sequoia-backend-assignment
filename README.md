@@ -1,9 +1,5 @@
 # Backend Assignment
 
-### Build a "headless" simple Trello board application to manage users and their tasks.	
-
-#### This Application has three entities:
-
   - **Users**: Users of the application. 
     - Each user is uniquely identified by his/her email address.
     - There will be two roles: Admin and User. 
