@@ -37,6 +37,7 @@ services:
       PG_PASSWORD: password
       PG_DBNAME: postgres
       PG_SSLMODE: disable
+      JWT_SECRET: supersecretsigningkey
     ports:
       - "3000:3000"
     depends_on:

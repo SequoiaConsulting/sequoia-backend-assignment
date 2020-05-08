@@ -8,6 +8,8 @@ SRC_PATH := ./cmd/app
 BIN_PATH := ./build/app
 DOCKER_IMAGE := backend-assignment
 
+RUN_ENV := PG_HOST=localhost PG_PORT=5432 PG_USER=postgres PG_PASSWORD=password PG_DBNAME=postgres PG_SSLMODE=disable JWT_SECRET=supersecretsigningkey
+
 binary: ## build static binary from Go source
 	@echo "exporting binary at path" $(BIN_PATH)
 	@$(GOBUILD) -o $(BIN_PATH) $(SRC_PATH)
@@ -24,7 +26,7 @@ generate: ## generate everything in "./pkg/**/*/generate.go"
 	@$(GO) generate ./...
 
 run: ## run the binary locally
-	@$(GO) run $(SRC_PATH) --debug
+	@$(RUN_ENV) $(GO) run $(SRC_PATH) --debug
 
 tests: ## run unit tests
 	@$(GO) test ./pkg/...
