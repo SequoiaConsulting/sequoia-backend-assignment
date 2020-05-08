@@ -1,5 +1,9 @@
 # Backend Assignment
 
+### Build a "headless" simple Trello board application to manage users and their tasks.	
+
+#### This Application has three entities:
+
   - **Users**: Users of the application. 
     - Each user is uniquely identified by his/her email address.
     - There will be two roles: Admin and User. 
@@ -25,10 +29,10 @@
   - _Programming language_: 
   	- [ ] NodeJS
 	- [ ] Golang
-	- [ ] Python
+	- [x] Python
   - _Database_: 
   	- [ ] MySQL
-	- [ ] Postgresql
+	- [x] Postgresql
 	- [ ] MariaDB
 	- [ ] SQLite
 	- [ ] MS SQL
@@ -53,17 +57,3 @@
   - [ ] Generate Open API documentation using Swagger or related(Postman collection, etc.,)
   - [ ] Covered 99.99% possible cases without errors and introduce new use-cases wherever "necessary" -- True traits of 10x developer :P
   - [ ] Build admin panel UI for it using any frontend framework.
-  
-
-
-#### Interested enough? Steps to go ahead about this assignment:
-  - Fork this Github repository. [Help link](https://guides.github.com/activities/forking) if needed
-  - Keep committing your changes on this forked repository regularly, we prefer if you are comitting several small changes instead of one large commit. Dont worry, only your final commit will be considered for evaluation.
-  - Make sure you keep editing this README file on your forked repository and mark checkboxes above on the things you completed ([Help link](https://www.markdownguide.org/extended-syntax/#task-lists) to mark a checkbox in this README markdown)
-  - Once you have finalised, create a Pull Request to this original repository. We'll review it and get back to you with some news.
-  
-
- 
-_In case of any queries, mail to Karthikeyan NG <karthikeyan.ng@sequoia.com> or Indrajeet Kumar <indrajeet@sequoia.com>. We'll revert to you with the clarifications_
- 
- 
