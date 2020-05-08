@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/model"
 	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/utils"
 	"github.com/julienschmidt/httprouter"
 	"github.com/rs/zerolog"
@@ -36,6 +37,10 @@ func main() {
 	}
 
 	defer db.Close()
+	if err = model.AutoMigrate(db); err != nil {
+		log.Fatal().Err(err).Msg("unable to migrate database schemas")
+	}
+
 	router := httprouter.New()
 	router.HandlerFunc(http.MethodGet, "/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, world!"))
@@ -64,9 +69,9 @@ func initDbConn() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	db.SetLogger(&utils.GORMLogger{})
-	db = db.Set("gorm:association_autocreate", false)
-	db = db.Set("gorm:association_autoupdate", false)
+	db.SetLogger(&utils.GORMLogger{})                 // only outputs logs if zerolog is set to debug level
+	db = db.Set("gorm:association_autocreate", false) // disable association auto create
+	db = db.Set("gorm:association_autoupdate", false) // disbale association auto update
 	db = db.LogMode(true)
 	return db, nil
 }
