@@ -1,0 +1,731 @@
+{
+	"info": {
+		"_postman_id": "126c0925-7623-40e3-93ec-7225469f683d",
+		"name": "Trello-Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Signup/Register a User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"jatin10\",\n\t\"password\": \"setpassword\",\n\t\"name\": \"Jatin\",\n\t\"email\": \"a@b.com\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								""
+							]
+						},
+						"description": "### Signup a User\n - Required -> Username(alphanumeric, unique), password(some validators must be passed), name, email(unique)\n\n#### Response\n - 200 Ok for successful request.\n - Returns token, which will be used for authorization for other requests. (Save it without quotes)."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Details of User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjksInVzZXJuYW1lIjoiamF0aW4xMCIsIm5hbWUiOiJKYXRpbiIsImVtYWlsIjoiYUBiLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNjAyNzU3LCJvcmlnX2lhdCI6MTU4OTAxMDc1N30.aJ5zNvsqnNAMRQfXKu6bPJIs1cam3mb8J6QXJp8e5Eg",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/jatin10/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"jatin10",
+								""
+							]
+						},
+						"description": " - URL .../users/{username}/\n - Must be authenticated and authorized.\n - Replace token in headers.\n - Returns User details"
+					},
+					"response": []
+				},
+				{
+					"name": "Check if a username exists",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImphdGluIiwiZXhwIjoxNTkxNDUyOTc3LCJlbWFpbCI6ImphdGluZ295YWw3NTlAZ21haWwuY29tIiwib3JpZ19pYXQiOjE1ODg4NjA5Nzd9.rMiWU0h0GLDzxv0qkK5f9gdS0WzPJ2KMQkRlAfAWndk",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/check-existing-user/jatin10/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"check-existing-user",
+								"jatin10",
+								""
+							]
+						},
+						"description": "- URL http://127.0.0.1:8000/users/check-existing-user/{username}/\n- Replace token in headers\n- Return 200 if exists, otherwise 404 not found."
+					},
+					"response": []
+				},
+				{
+					"name": "Login a user with credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"jatin10\",\n\t\"password\": \"setpassword\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/auth/login/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "- URL http://127.0.0.1:8000/users/auth/login/\n- Send username and password.\n- Returns token that will be used for requests which needs authorizartion."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Create Project Board",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Trade Project\",\n\t\"description\": \"fjsd jdfkj\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/projects/\n - Replace token in headers."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch All Users from All Projects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjEsInVzZXJuYW1lIjoiamF0aW4iLCJuYW1lIjoiSmF0aW4gR295YWwiLCJlbWFpbCI6ImphdGluZ295YWw3NTlAZ21haWwuY29tIiwic3RhZmYiOnRydWUsImV4cCI6MTU5MTUyMDE0NSwib3JpZ19pYXQiOjE1ODg5MjgxNDV9.mewTD9Mk6h-oPOnBWJSVI-FfjygFWMszr_xkGVm5ppU",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								""
+							]
+						},
+						"description": "- URL http://127.0.0.1:8000/projects/\n- Application Admin token is required for this request\n- NOTE: Application admin is different from Project Board admin."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Project Board",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"New Project 1\",\n\t\"description\": \"fjsd jdfkj\",\n\t\"archived\": \"true\",\n\t\"statuses\": [\"InProgress\", \"Done\"]\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								"2",
+								""
+							]
+						},
+						"description": "- URL http://127.0.0.1:8000/projects/{project_board_id}/\n- Update archive/unarchive, title, description or statuses of a project board."
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to Project Board ",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\": \"jatin4\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/user/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								"user",
+								"2",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/projects/user/{project_board_id}/\n - Requesting user must be an admin of this project. "
+					},
+					"response": []
+				},
+				{
+					"name": "Activate/Deactivate User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user\": \"jatin2\",\n\t\"admin\": \"True\",\n\t\"active\": \"True\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/user/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								"user",
+								"2",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/projects/user/{project_board_id}/\n - Must be an admin of this project.\n - It can activate/deactivate a user. It can make a user admin/non-admin for a project board."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch Users of Particular Project",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/user/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								"user",
+								"2",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/projects/user/{project_board_id}/\n - Returns all users of this project board. The requesting user must be associated with this project board."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch all users of all projects (Must be a member)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTA4MDE2LCJvcmlnX2lhdCI6MTU4ODkxNjAxNn0.nXaPzrMJ9Fcn4ameQY3iy_e7GuKrLuvNDRzAvTsZ_iI",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/projects/user/all/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"projects",
+								"user",
+								"all",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/projects/user/all/\n - Fetch all users of all projects with which the requesting user is associated."
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Creates a Task.",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTk5MTk1LCJvcmlnX2lhdCI6MTU4OTAwNzE5NX0.3B6_0uOC03Gusmv89n8530JUQFqiUGYFpYvCY5a-LD4",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"pbid\": 3,\n\t\"title\": \"Task at home\",\n\t\"assignee\": \"jatin3\",\n\t\"status\": \"Done\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/tasks/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/tasks/\n - Project board id, status, title are required.\n - Status must belong to the list of statuses of that project.\n - Requesting User must be associated to that project."
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTk1MzUzLCJvcmlnX2lhdCI6MTU4OTAwMzM1M30.EQcsmJKMNgkEJ4GV1gVG5SPnrJm4Dp6QXXF--aeOyDw",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Task at home\",\n\t\"assignee\": \"jatin3\",\n\t\"status\": \"Done\"\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/tasks/2/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								"2",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/tasks/{task_id}/\n - Requesting user must be associted with the task's project."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTk1MzUzLCJvcmlnX2lhdCI6MTU4OTAwMzM1M30.EQcsmJKMNgkEJ4GV1gVG5SPnrJm4Dp6QXXF--aeOyDw",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/tasks/5/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								"5",
+								""
+							]
+						},
+						"description": " - URL http://127.0.0.1:8000/tasks/{task_id}/\n - User must be associated with taks's project."
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch details of particular task",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOjMsInVzZXJuYW1lIjoiamF0aW4zIiwibmFtZSI6IkphdGluIiwiZW1haWwiOiJiQGdtYWlsLmNvbSIsInN0YWZmIjpmYWxzZSwiZXhwIjoxNTkxNTk5MTk1LCJvcmlnX2lhdCI6MTU4OTAwNzE5NX0.3B6_0uOC03Gusmv89n8530JUQFqiUGYFpYvCY5a-LD4",
+								"type": "text"
+							},
+							{
+								"key": "x-Vafo-client",
+								"value": "78fa5d7cc9d04c1aa79834433b6c4d27",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/tasks/5/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"tasks",
+								"5",
+								""
+							]
+						},
+						"description": " - http://127.0.0.1:8000/tasks/{task_id}/\n - Requesting user must be associated to task's project "
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
