@@ -4,7 +4,7 @@
 //
 //     Schemes: http
 //     Host: localhost:3000
-//     BasePath: /v1
+//     BasePath: /
 //     Version: 1.0.0
 //     License: Proprietary
 //     Contact: Ashutosh Gangwar<ashutoshgngwr@gmail.com> https://ashutoshgngwr.github.io

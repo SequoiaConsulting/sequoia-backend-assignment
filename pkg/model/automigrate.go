@@ -13,6 +13,7 @@ func AutoMigrate(db *gorm.DB) error {
 		new(RevokedSession),
 		new(User),
 		new(Board),
+		new(BoardUser),
 		new(TaskStatus),
 		new(Task),
 	).Error

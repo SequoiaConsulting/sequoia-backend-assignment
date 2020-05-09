@@ -6,15 +6,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/model"
-	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/utils"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/pflag"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/model"
+	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/routes"
+	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/service"
+	"github.com/ashutoshgngwr/sequoia-backend-assignment/pkg/utils"
 )
 
 var (
@@ -41,10 +43,13 @@ func main() {
 		log.Fatal().Err(err).Msg("unable to migrate database schemas")
 	}
 
-	router := httprouter.New()
-	router.HandlerFunc(http.MethodGet, "/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, world!"))
-	})
+	userService := service.NewUserService(db, requireEnvVar("JWT_SECRET"))
+
+	// register routes
+	router := mux.NewRouter()
+	router.Use(utils.HTTPContentTypeMiddleware)
+	router.Use(utils.HTTPAuthMiddleware(userService))
+	routes.RegisterUserRoutes(router, userService)
 
 	// start http server on the main thread
 	log.Info().Int("port", listenPort).Msg("listening for HTTP requests")

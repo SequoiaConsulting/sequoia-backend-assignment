@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -22,8 +23,8 @@ type SessionClaims struct {
 // UserService declares all the functions performed by the user
 // service.
 type UserService interface {
-	// Get just gets the the user
-	Get(id uint) (*model.User, error)
+	// Get just gets the the user if requestingUser has permissions to access it
+	Get(id, requestingUserID uint) (*model.User, error)
 	// Create creates a new user in the database and returns its ID.
 	Create(*model.User) (uint, error)
 	// Login tries to authenticate a user using username and password. Returns a session
@@ -53,7 +54,32 @@ func NewUserService(db *gorm.DB, jwtSigningKey string) UserService {
 
 var _ UserService = &userServiceImpl{}
 
-func (svc *userServiceImpl) Get(id uint) (*model.User, error) {
+func (svc *userServiceImpl) Get(id, requestingUserID uint) (*model.User, error) {
+	if id != requestingUserID {
+		count := 0
+		err := svc.db.Model(&model.BoardUser{}).
+			Select("cound(user_id)").
+			Where("user_id = ?", id).
+			Where("board_id in (?)",
+				svc.db.Model(&model.BoardUser{}).
+					Select("board_id").
+					Where("user_id = ?", requestingUserID).
+					SubQuery(),
+			).
+			Count(&count).
+			Error
+
+		if err != nil {
+			svc.logger.Warn().Err(err).Msg("unable to exec that giant find user query")
+			return nil, model.ErrInternalServerError
+		}
+
+		if count < 1 {
+			// user isn't assigned to a admin owned board
+			return nil, model.ErrUserNotFound
+		}
+	}
+
 	user := &model.User{}
 	err := user.FindByID(svc.db, id)
 	return user, err
@@ -91,7 +117,7 @@ func (svc *userServiceImpl) Login(email, password string) (string, error) {
 	claims := SessionClaims{
 		IsAdmin: *user.IsAdmin,
 		StandardClaims: jwt.StandardClaims{
-			Subject:   string(user.ID),
+			Subject:   fmt.Sprintf("%d", user.ID),
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 		},
 	}

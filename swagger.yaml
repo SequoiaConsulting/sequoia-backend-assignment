@@ -1,4 +1,4 @@
-basePath: /v1
+basePath: /
 consumes:
 - application/json
 host: localhost:3000
@@ -13,9 +13,173 @@ info:
     name: Proprietary
   title: backend-assignment
   version: 1.0.0
-paths: {}
+paths:
+  /users/{userID}:
+    get:
+      consumes:
+      - application/json
+      description: Get a user by their ID
+      operationId: getUser
+      parameters:
+      - description: ID of the requested user
+        in: path
+        name: userID
+        required: true
+        type: string
+        x-go-name: UserID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/getUserResponse'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - user
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user using credentials to issue a session token
+      operationId: loginUser
+      parameters:
+      - in: body
+        name: Credentials
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+              x-go-name: Email
+            password:
+              type: string
+              x-go-name: Password
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/loginResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "403":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - user
+  /users/logout:
+    get:
+      consumes:
+      - application/json
+      description: Revokes the current session token for the user
+      operationId: logoutUser
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/logoutResponse'
+        "403":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - user
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      operationId: signupUser
+      parameters:
+      - in: body
+        name: User
+        required: true
+        schema:
+          properties:
+            email:
+              type: string
+              x-go-name: Email
+            name:
+              type: string
+              x-go-name: Name
+            password:
+              type: string
+              x-go-name: Password
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/created'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      summary: Register a new user with the system.
+      tags:
+      - user
 produces:
 - application/json
+responses:
+  created:
+    description: |-
+      Returned on successful resource creation. It also contains the path of created
+      resource on the server.
+    schema:
+      properties:
+        href:
+          type: string
+          x-go-name: Href
+      type: object
+  errored:
+    description: A response that indicates error in performed operation
+    schema:
+      properties:
+        error:
+          type: string
+          x-go-name: Error
+      type: object
+  getUserResponse:
+    description: Returns requested user
+    schema:
+      properties:
+        email:
+          type: string
+          x-go-name: Email
+        id:
+          format: uint64
+          type: integer
+          x-go-name: ID
+        is_admin:
+          type: boolean
+          x-go-name: IsAdmin
+        name:
+          type: string
+          x-go-name: Name
+      type: object
+  loginResponse:
+    description: loginReponse returns a session token in Authorization header on successful
+      login
+    headers:
+      Authorization:
+        description: Bearer token
+        type: string
+  logoutResponse:
+    description: indicates successful logout
 schemes:
 - http
 securityDefinitions:

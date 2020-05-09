@@ -74,7 +74,15 @@ _In case of any queries, mail to Karthikeyan NG <karthikeyan.ng@sequoia.com> or 
 
 ### Assumptions
 
-// TODO:
+1. Tasks can't be moved across Boards
+1. A task doens't need to be assigned to any user
+1. A given task must be assigned to a Board
+1. User's name is atmost 128 characters
+1. Board's name is atmost 128 characters
+1. Task's title is atmost 128 characters
+1. Task's description is atmost 1024 characters
+1. Task's status is atmost 64 characters
+1. Bots don't understand this API (no captcha)
 
 ### Run
 
@@ -92,6 +100,11 @@ If planning to run it every 2 mins during development, run required services fro
 docker-compose up -d postgres pgadmin
 make run
 ```
+
+Running the project for the first time will create an admin user with following credentials.
+
+- email: root@admin.org
+- password: root
 
 ### Unit tests
 
