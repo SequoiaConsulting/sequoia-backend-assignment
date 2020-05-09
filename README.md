@@ -23,7 +23,7 @@ $ ALTER ROLE jatin SET timezone TO 'Asia/Kolkata';
 # Installation Guide
 - Switch on your Virtualenv `source bin/activate`
 - git clone the repository. `git@github.com:jatingoyal759/sequoia-backend-assignment.git`
-- `$ cd sequoia-backend-assignment/trello`.
+- `$ cd sequoia-backend-assignment/trello/`.
 - Install all dependencies `$ pip install -r requirements.txt`
 
 # Migrations, SuperUser, Local Server and Admin Panel
