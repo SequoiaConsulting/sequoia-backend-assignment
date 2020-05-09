@@ -20,7 +20,7 @@
   - To add/retrieve/edit/remove a task, one must be associated to the task's project board.
 
 #### Other Implementations
- - Generated [API documentation](https://www.getpostman.com/collections/676f38b3884d762d4f9d) via Postman Collection
+ - Generated [API documentation](https://documenter.getpostman.com/view/5222257/SzmfXxAa) via Postman Collection
  - Done with API testing.
  - Tried dockerizing the code. Made Docker Files but the code is not dockerized due to few issues.
  - Built admin panel using Django admin panel. Checked all the functionalities via admin panel.
