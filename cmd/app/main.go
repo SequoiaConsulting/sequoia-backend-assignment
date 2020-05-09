@@ -50,6 +50,7 @@ func main() {
 	router.Use(utils.HTTPContentTypeMiddleware)
 	router.Use(utils.HTTPAuthMiddleware(userService))
 	routes.RegisterUserRoutes(router, userService)
+	routes.RegisterBoardRoutes(router, service.NewBoardService(db))
 
 	// start http server on the main thread
 	log.Info().Int("port", listenPort).Msg("listening for HTTP requests")

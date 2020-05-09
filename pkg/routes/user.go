@@ -109,7 +109,7 @@ type loginParams struct {
 // loginReponse returns a session token in Authorization header on successful login
 // swagger:response loginResponse
 type loginResponse struct {
-	// Bearer token
+	// Bearer <token>
 	Authorization string
 }
 
@@ -147,11 +147,7 @@ func (controller *userController) login(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	resp := &loginResponse{
-		Authorization: fmt.Sprintf("Bearer %s", token),
-	}
-
-	w.Header().Add("Authorization", resp.Authorization)
+	w.Header().Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -190,15 +186,13 @@ func (controller *userController) logout(w http.ResponseWriter, r *http.Request)
 }
 
 // swagger:parameters getUser
-type getUserPrameters struct { // this is unused. using _ for name was cauing swagger to not pick it up.
-	// ID of the requested user
+type getUserParams struct {
 	// in: path
-	// required: true
 	UserID string `json:"userID"`
 }
 
 // Returns requested user
-// swagger:response getUserResponse
+// swagger:response getUser
 type getUserResponse struct {
 	// in: body
 	// required: true
@@ -222,7 +216,7 @@ type getUserResponse struct {
 //	Security:
 //		- api_key
 //	Responses:
-//		200: getUserResponse
+//		200: getUser
 //		404: errored
 //		500: errored
 func (controller *userController) get(w http.ResponseWriter, r *http.Request) {

@@ -14,6 +14,199 @@ info:
   title: backend-assignment
   version: 1.0.0
 paths:
+  /boards:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new board and sets the current user as its admin
+      operationId: createBoard
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          properties:
+            name:
+              type: string
+              x-go-name: Name
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/created'
+        "400":
+          $ref: '#/responses/errored'
+        "403":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+  /boards/{boardID}:
+    get:
+      consumes:
+      - application/json
+      description: Check if a logged in user has access to the given board
+      operationId: getBoard
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/getBoard'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+  /boards/{boardID}/archive:
+    get:
+      consumes:
+      - application/json
+      description: Archive board with given ID
+      operationId: archiveBoard
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      produces:
+      - application/json
+      responses:
+        "202":
+          $ref: '#/responses/archiveBoard'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+  /boards/{boardID}/unarchive:
+    get:
+      consumes:
+      - application/json
+      description: Unarchive board with given ID
+      operationId: unarchiveBoard
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      produces:
+      - application/json
+      responses:
+        "202":
+          $ref: '#/responses/unarchiveBoard'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+  /boards/{boardID}/user:
+    delete:
+      consumes:
+      - application/json
+      description: Removes the provided user to the given board
+      operationId: removeUser
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: body
+        name: Body
+        schema:
+          properties:
+            user_id:
+              format: uint64
+              type: integer
+              x-go-name: UserID
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/assignOrRemoveUser'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+    put:
+      consumes:
+      - application/json
+      description: Adds the provided user to the given board
+      operationId: assignUser
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: body
+        name: Body
+        schema:
+          properties:
+            user_id:
+              format: uint64
+              type: integer
+              x-go-name: UserID
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/assignOrRemoveUser'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
   /users/{userID}:
     get:
       consumes:
@@ -21,8 +214,7 @@ paths:
       description: Get a user by their ID
       operationId: getUser
       parameters:
-      - description: ID of the requested user
-        in: path
+      - in: path
         name: userID
         required: true
         type: string
@@ -31,7 +223,7 @@ paths:
       - application/json
       responses:
         "200":
-          $ref: '#/responses/getUserResponse'
+          $ref: '#/responses/getUser'
         "404":
           $ref: '#/responses/errored'
         "500":
@@ -135,6 +327,10 @@ paths:
 produces:
 - application/json
 responses:
+  archiveBoard:
+    description: Successfully archived
+  assignOrRemoveUser:
+    description: Indicates operation success
   created:
     description: |-
       Returned on successful resource creation. It also contains the path of created
@@ -153,7 +349,9 @@ responses:
           type: string
           x-go-name: Error
       type: object
-  getUserResponse:
+  getBoard:
+    description: Indicates that user is assigned to the board
+  getUser:
     description: Returns requested user
     schema:
       properties:
@@ -176,10 +374,12 @@ responses:
       login
     headers:
       Authorization:
-        description: Bearer token
+        description: Bearer <token>
         type: string
   logoutResponse:
     description: indicates successful logout
+  unarchiveBoard:
+    description: Successfully unarchived
 schemes:
 - http
 securityDefinitions:
