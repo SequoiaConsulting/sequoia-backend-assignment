@@ -103,6 +103,139 @@ paths:
       - https
       tags:
       - board
+  /boards/{boardID}/status:
+    get:
+      consumes:
+      - application/json
+      description: List all status for a given board
+      operationId: listStatus
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - format: uint64
+        in: query
+        name: limit
+        type: integer
+        x-go-name: Limit
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/listResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - status
+    post:
+      consumes:
+      - application/json
+      description: Create a new status for a given board
+      operationId: createStatus
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: body
+        name: Body
+        schema:
+          properties:
+            title:
+              type: string
+              x-go-name: Title
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/created'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - status
+  /boards/{boardID}/status/{statusID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete status for a given board
+      operationId: deleteStatus
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: path
+        name: statusID
+        required: true
+        type: string
+        x-go-name: StatusID
+      produces:
+      - application/json
+      responses:
+        "202":
+          $ref: '#/responses/deleteStatus'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - status
+    get:
+      consumes:
+      - application/json
+      description: Get status details for a given board
+      operationId: getStatus
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: path
+        name: statusID
+        required: true
+        type: string
+        x-go-name: StatusID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/getStatus'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - status
   /boards/{boardID}/unarchive:
     get:
       consumes:
@@ -132,7 +265,7 @@ paths:
       - https
       tags:
       - board
-  /boards/{boardID}/user:
+  /boards/{boardID}/users:
     delete:
       consumes:
       - application/json
@@ -170,6 +303,41 @@ paths:
       - https
       tags:
       - board
+      - user
+    get:
+      consumes:
+      - application/json
+      description: Lists all users assigned to a given board
+      operationId: listUser
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - format: uint64
+        in: query
+        name: limit
+        type: integer
+        x-go-name: Limit
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/listResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - user
     put:
       consumes:
       - application/json
@@ -207,6 +375,7 @@ paths:
       - https
       tags:
       - board
+      - user
   /users/{userID}:
     get:
       consumes:
@@ -341,6 +510,8 @@ responses:
           type: string
           x-go-name: Href
       type: object
+  deleteStatus:
+    description: status deleted successfully
   errored:
     description: A response that indicates error in performed operation
     schema:
@@ -351,6 +522,22 @@ responses:
       type: object
   getBoard:
     description: Indicates that user is assigned to the board
+  getStatus:
+    description: task status details
+    schema:
+      properties:
+        board_id:
+          format: uint64
+          type: integer
+          x-go-name: BoardID
+        id:
+          format: uint64
+          type: integer
+          x-go-name: ID
+        title:
+          type: string
+          x-go-name: Title
+      type: object
   getUser:
     description: Returns requested user
     schema:
@@ -368,6 +555,16 @@ responses:
         name:
           type: string
           x-go-name: Name
+      type: object
+  listResponse:
+    description: A list of requested resources with their location
+    schema:
+      properties:
+        hrefs:
+          items:
+            type: string
+          type: array
+          x-go-name: Hrefs
       type: object
   loginResponse:
     description: loginReponse returns a session token in Authorization header on successful

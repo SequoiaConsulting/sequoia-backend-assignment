@@ -24,6 +24,14 @@ type BoardService interface {
 	RemoveUser(boardID, userID, reqUserID uint) error
 	// ListUsers lists all users for a board if requesting user is assigned to it
 	ListUsers(boardID, reqUserID, limit uint) ([]uint, error)
+	// CreateStaus creates a new task status with given details
+	CreateStatus(title string, boardID, reqUserID uint) (uint, error)
+	// DeleteStatus deletes the task status with given id
+	DeleteStatus(statusID, boardID, reqUserID uint) error
+	// ListStatus lists all status for a given board
+	ListStatus(boardID, reqUserID uint) ([]uint, error)
+	// GetStatus gets details of specific status
+	GetStatus(statusID, boardID, reqUserID uint) (*model.TaskStatus, error)
 }
 
 type boardServiceImpl struct {
@@ -142,4 +150,73 @@ func (svc *boardServiceImpl) ListUsers(boardID, reqUserID, limit uint) ([]uint, 
 	}
 
 	return userIDs, nil
+}
+
+func (svc *boardServiceImpl) CreateStatus(title string, boardID, reqUserID uint) (uint, error) {
+	boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return 0, err
+	}
+
+	status := &model.TaskStatus{BoardID: boardID, Title: title}
+	err = status.Create(svc.db)
+	return status.ID, err
+}
+
+func (svc *boardServiceImpl) DeleteStatus(statusID, boardID, reqUserID uint) error {
+	return svc.db.Transaction(func(txn *gorm.DB) error {
+		boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+		err := boardUser.Exists(txn)
+		if err != nil {
+			return err
+		}
+
+		status := &model.TaskStatus{Model: gorm.Model{ID: statusID}}
+		err = status.Find(txn)
+		if err != nil {
+			return err
+		}
+
+		// set task status to null
+		err = txn.Model(&model.Task{}).Where("status_id = ?", status.ID).UpdateColumns(map[string]interface{}{
+			"status_id": nil,
+		}).Error
+
+		if err != nil {
+			svc.logger.Warn().Err(err).Msg("unable to set status_id to null")
+			return model.ErrInternalServerError
+		}
+
+		return status.Delete(txn)
+	})
+}
+
+func (svc *boardServiceImpl) ListStatus(boardID, reqUserID uint) ([]uint, error) {
+	boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return nil, err
+	}
+
+	ids := []uint{}
+	where := &model.TaskStatus{BoardID: boardID}
+	err = svc.db.Model(where).Where(where).Pluck("id", &ids).Error
+	if err != nil {
+		svc.logger.Warn().Err(err).Msg("unable to exec list status query")
+		return nil, model.ErrInternalServerError
+	}
+	return ids, nil
+}
+
+func (svc *boardServiceImpl) GetStatus(statusID, boardID, reqUserID uint) (*model.TaskStatus, error) {
+	boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return nil, err
+	}
+
+	status := &model.TaskStatus{Model: gorm.Model{ID: statusID}}
+	err = status.Find(svc.db)
+	return status, err
 }

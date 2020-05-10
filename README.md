@@ -84,6 +84,7 @@ _In case of any queries, mail to Karthikeyan NG <karthikeyan.ng@sequoia.com> or 
 1. Task's status is atmost 64 characters
 1. Bots don't understand this API (no captcha)
 1. A board can only have a single admin
+1. Status cannot be updated after created. It can be deleted
 
 ### Run
 

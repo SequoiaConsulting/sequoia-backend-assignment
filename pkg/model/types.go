@@ -17,4 +17,6 @@ var (
 	ErrBoardNotFound = errors.New("board not found")
 	// ErrBoardUserNotFound is returned when mapping with board id and user id could not be found.
 	ErrBoardUserNotFound = errors.New("user isn't assigned to this board")
+	// ErrTaskStatusNotFound is returned when task status couldn't be found
+	ErrTaskStatusNotFound = errors.New("task status not found")
 )

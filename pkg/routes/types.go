@@ -21,6 +21,15 @@ type createdResponse struct {
 	}
 }
 
+// A list of requested resources with their location
+// swagger:response listResponse
+type listResponse struct {
+	// in: body
+	Body struct {
+		Hrefs []string `json:"hrefs"`
+	}
+}
+
 var (
 	// ErrInvalidBody is a server response when it is not able to properly
 	// decode the request body
