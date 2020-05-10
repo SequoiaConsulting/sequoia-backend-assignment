@@ -19,4 +19,6 @@ var (
 	ErrBoardUserNotFound = errors.New("user isn't assigned to this board")
 	// ErrTaskStatusNotFound is returned when task status couldn't be found
 	ErrTaskStatusNotFound = errors.New("task status not found")
+	// ErrTaskNotFound is returned task could not be found
+	ErrTaskNotFound = errors.New("task not found")
 )

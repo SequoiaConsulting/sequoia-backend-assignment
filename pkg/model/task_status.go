@@ -11,8 +11,6 @@ type TaskStatus struct {
 	gorm.Model
 	BoardID uint   `gorm:"unique_index:idx_status;foreignkey;not null"`
 	Title   string `gorm:"unique_index:idx_status;size:64;not null"`
-
-	Board Board
 }
 
 // BeforeUpdate implements the GORM hook to validate input before applying to database
@@ -67,7 +65,7 @@ func (status *TaskStatus) Create(db *gorm.DB) error {
 
 // Delete deletes the receiver object in the database
 func (status *TaskStatus) Delete(db *gorm.DB) error {
-	err := db.Model(status).Where(&TaskStatus{Model: status.Model}).Delete(status).Error
+	err := db.Unscoped().Model(status).Where(&TaskStatus{Model: status.Model}).Delete(status).Error
 	if err != nil {
 		loggerFor("task_status").Warn().Err(err).Msg("unable to exec delete query")
 		return ErrInternalServerError

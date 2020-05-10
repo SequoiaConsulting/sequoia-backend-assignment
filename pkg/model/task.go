@@ -19,12 +19,6 @@ type Task struct {
 	AssigneeID  *uint      `gorm:"foreignkey;"`
 	AssignerID  *uint      `gorm:"foreignkey;"`
 	StatusID    *uint      `gorm:"foreignkey;"`
-
-	Owner    User
-	Assignee User
-	Assigner User
-	Board    Board
-	Status   TaskStatus
 }
 
 // BeforeUpdate implements the GORM hook to validate input before updating database
@@ -43,6 +37,43 @@ func (task *Task) Create(db *gorm.DB) error {
 	err := db.Model(task).Create(task).Error
 	if err != nil {
 		loggerFor("task").Warn().Err(err).Msg("unable to exec create query")
+		return ErrInternalServerError
+	}
+
+	return nil
+}
+
+// Update updates the task in database
+func (task *Task) Update(db *gorm.DB) error {
+	err := db.Model(task).Where(&Task{Model: gorm.Model{ID: task.ID}}).Update(task).Error
+	if err != nil {
+		loggerFor("task").Warn().Err(err).Msg("unable to exec update query")
+		return ErrInternalServerError
+	}
+
+	return nil
+}
+
+// FindByID finds a task by its ID
+func (task *Task) FindByID(db *gorm.DB) error {
+	err := db.Model(task).Where(&Task{Model: gorm.Model{ID: task.ID}}).First(task).Error
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			return ErrTaskNotFound
+		}
+
+		loggerFor("task").Warn().Err(err).Msg("unable to exec find by id query")
+		return ErrInternalServerError
+	}
+
+	return nil
+}
+
+// Delete deletes the task in database
+func (task *Task) Delete(db *gorm.DB) error {
+	err := db.Model(task).Where(&Task{Model: gorm.Model{ID: task.ID}}).Delete(task).Error
+	if err != nil {
+		loggerFor("task").Warn().Err(err).Msg("unable to exec delete query")
 		return ErrInternalServerError
 	}
 

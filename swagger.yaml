@@ -236,6 +236,220 @@ paths:
       tags:
       - board
       - status
+  /boards/{boardID}/tasks:
+    get:
+      consumes:
+      - application/json
+      description: List tasks on a given board
+      operationId: listTask
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - format: uint64
+        in: query
+        name: limit
+        type: integer
+        x-go-name: Limit
+      - description: list tasks for this status only
+        format: uint64
+        in: query
+        name: status_id
+        type: integer
+        x-go-name: StatusID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/listResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - task
+    post:
+      consumes:
+      - application/json
+      description: Create a new task on a given board
+      operationId: createTask
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: body
+        name: Body
+        schema:
+          properties:
+            assignee_id:
+              format: uint64
+              type: integer
+              x-go-name: AssigneeID
+            description:
+              type: string
+              x-go-name: Description
+            due_date:
+              format: date-time
+              type: string
+              x-go-name: DueDate
+            status_id:
+              format: uint64
+              type: integer
+              x-go-name: StatusID
+            title:
+              type: string
+              x-go-name: Title
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          $ref: '#/responses/created'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - task
+  /boards/{boardID}/tasks/{taskID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete task on a given board
+      operationId: deleteTask
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - format: uint64
+        in: path
+        name: taskID
+        required: true
+        type: integer
+        x-go-name: TaskID
+      produces:
+      - application/json
+      responses:
+        "202":
+          $ref: '#/responses/deleteTaskResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Get task on a given board
+      operationId: getTask
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - format: uint64
+        in: path
+        name: taskID
+        required: true
+        type: integer
+        x-go-name: TaskID
+      produces:
+      - application/json
+      responses:
+        "200":
+          $ref: '#/responses/getTask'
+        "400":
+          $ref: '#/responses/errored'
+        "404":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - task
+    put:
+      consumes:
+      - application/json
+      description: Update task on a given board
+      operationId: updateTask
+      parameters:
+      - format: uint64
+        in: path
+        name: boardID
+        required: true
+        type: integer
+        x-go-name: BoardID
+      - in: body
+        name: Body
+        schema:
+          properties:
+            assignee_id:
+              format: uint64
+              type: integer
+              x-go-name: AssigneeID
+            description:
+              type: string
+              x-go-name: Description
+            due_date:
+              format: date-time
+              type: string
+              x-go-name: DueDate
+            status_id:
+              format: uint64
+              type: integer
+              x-go-name: StatusID
+            title:
+              type: string
+              x-go-name: Title
+          type: object
+      - format: uint64
+        in: path
+        name: taskID
+        required: true
+        type: integer
+        x-go-name: TaskID
+      produces:
+      - application/json
+      responses:
+        "202":
+          $ref: '#/responses/updateTaskResponse'
+        "400":
+          $ref: '#/responses/errored'
+        "500":
+          $ref: '#/responses/errored'
+      schemes:
+      - http
+      - https
+      tags:
+      - board
+      - task
   /boards/{boardID}/unarchive:
     get:
       consumes:
@@ -512,6 +726,8 @@ responses:
       type: object
   deleteStatus:
     description: status deleted successfully
+  deleteTaskResponse:
+    description: Successful delete
   errored:
     description: A response that indicates error in performed operation
     schema:
@@ -534,6 +750,37 @@ responses:
           format: uint64
           type: integer
           x-go-name: ID
+        title:
+          type: string
+          x-go-name: Title
+      type: object
+  getTask:
+    description: Returned task
+    schema:
+      properties:
+        assignee_id:
+          format: uint64
+          type: integer
+          x-go-name: AssigneeID
+        assigner_id:
+          format: uint64
+          type: integer
+          x-go-name: AssignerID
+        description:
+          type: string
+          x-go-name: Description
+        due_date:
+          format: date-time
+          type: string
+          x-go-name: DueDate
+        owner_id:
+          format: uint64
+          type: integer
+          x-go-name: OwnerID
+        status_id:
+          format: uint64
+          type: integer
+          x-go-name: StatusID
         title:
           type: string
           x-go-name: Title
@@ -577,6 +824,8 @@ responses:
     description: indicates successful logout
   unarchiveBoard:
     description: Successfully unarchived
+  updateTaskResponse:
+    description: Successful update
 schemes:
 - http
 securityDefinitions:

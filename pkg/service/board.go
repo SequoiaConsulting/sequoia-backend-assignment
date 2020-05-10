@@ -32,6 +32,16 @@ type BoardService interface {
 	ListStatus(boardID, reqUserID uint) ([]uint, error)
 	// GetStatus gets details of specific status
 	GetStatus(statusID, boardID, reqUserID uint) (*model.TaskStatus, error)
+	// CreateTask creates a new task on the board
+	CreateTask(task *model.Task) (uint, error)
+	// ListTasks lists tasks from the given board
+	ListTask(boardID, reqUserID, statusID, limit uint) ([]uint, error)
+	// UpdateTask updates a task on the board
+	UpdateTask(task *model.Task) error
+	// DeleteTask creates a new task on the board
+	DeleteTask(taskID, boardID, reqUserID uint) error
+	// GetTask gets a task
+	GetTask(taskID, boardID, reqUserID uint) (*model.Task, error)
 }
 
 type boardServiceImpl struct {
@@ -219,4 +229,94 @@ func (svc *boardServiceImpl) GetStatus(statusID, boardID, reqUserID uint) (*mode
 	status := &model.TaskStatus{Model: gorm.Model{ID: statusID}}
 	err = status.Find(svc.db)
 	return status, err
+}
+
+func (svc *boardServiceImpl) CreateTask(task *model.Task) (uint, error) {
+	boardUser := &model.BoardUser{BoardID: task.BoardID, UserID: task.OwnerID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return 0, err
+	}
+
+	err = task.Create(svc.db)
+	return task.ID, err
+}
+
+func (svc *boardServiceImpl) ListTask(boardID, reqUserID, statusID, limit uint) ([]uint, error) {
+	boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return nil, err
+	}
+
+	taskIDs := []uint{}
+	where := &model.Task{BoardID: boardID}
+	if statusID > 0 {
+		where.StatusID = &statusID
+	}
+
+	err = svc.db.Model(where).Limit(limit).Where(where).Pluck("id", &taskIDs).Error
+	if err != nil {
+		svc.logger.Warn().Err(err).Msg("unable to list task ids for board")
+		return nil, model.ErrInternalServerError
+	}
+	return taskIDs, nil
+}
+
+func (svc *boardServiceImpl) UpdateTask(task *model.Task) error {
+	if task.ID < 1 {
+		return errors.New("invalid task id")
+	}
+
+	boardUser := &model.BoardUser{BoardID: task.BoardID, UserID: task.OwnerID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return err
+	}
+
+	return task.Update(svc.db)
+}
+
+func (svc *boardServiceImpl) DeleteTask(taskID, boardID, reqUserID uint) error {
+	if taskID < 1 {
+		return errors.New("invalid task id")
+	}
+
+	task := &model.Task{}
+	task.ID = taskID
+	err := task.FindByID(svc.db)
+	if err != nil {
+		return err
+	}
+
+	if boardID != task.BoardID || reqUserID != task.OwnerID {
+		return errors.New("task doesn't belong to this board or user")
+	}
+
+	return task.Delete(svc.db)
+}
+
+func (svc *boardServiceImpl) GetTask(taskID, boardID, reqUserID uint) (*model.Task, error) {
+	if taskID < 1 {
+		return nil, errors.New("invalid task id")
+	}
+
+	boardUser := &model.BoardUser{BoardID: boardID, UserID: reqUserID}
+	err := boardUser.Exists(svc.db)
+	if err != nil {
+		return nil, err
+	}
+
+	task := &model.Task{}
+	task.ID = taskID
+	err = task.FindByID(svc.db)
+	if err != nil {
+		return nil, err
+	}
+
+	if task.BoardID != boardID {
+		return nil, model.ErrTaskNotFound
+	}
+
+	return task, err
 }
