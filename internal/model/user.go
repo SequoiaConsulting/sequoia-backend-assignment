@@ -20,7 +20,6 @@ func (*User) TableName() string {
 }
 
 func ValidateUser(user User) error {
-	//err := ifTokenPresent(user.Token)
 	return valid.ValidateStruct(
 		valid.Field(&user.Name, valid.Required),
 		valid.Field(&user.Email, valid.Required),

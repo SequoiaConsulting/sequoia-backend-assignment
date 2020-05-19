@@ -42,8 +42,8 @@ func (core *UserCore) Create(user *model.User) (*model.User, error) {
 }
 
 // Update is the core domain layer method to update a user
-func (core *UserCore) Update(user *model.User) (*model.User, error) {
-	if err := core.repo.Update(user); err != nil {
+func (core *UserCore) Update(id string, user *model.User) (*model.User, error) {
+	if err := core.repo.Update(id, user); err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -51,7 +51,7 @@ func (core *UserCore) Update(user *model.User) (*model.User, error) {
 
 // Delete is the core domain layer method to delete a user
 func (core *UserCore) Delete(user *model.User) (*model.User, error) {
-	if err := core.repo.Create(user); err != nil {
+	if err := core.repo.Delete(user); err != nil {
 		return nil, err
 	}
 	return user, nil

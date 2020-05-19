@@ -24,6 +24,15 @@ func (repo *TaskMySQLRepository) GetByID(id string) (*model.Task, error) {
 	return task, nil
 }
 
+// GetByName does a database query to get a task by name
+func (repo *TaskMySQLRepository) GetByName(id string) (*model.Task, error) {
+	task := &model.Task{}
+	if err := repo.db.Where("id = ?", id).First(task).Error; err != nil {
+		return nil, err
+	}
+	return task, nil
+}
+
 // Create does a database query to create a task
 func (repo *TaskMySQLRepository) Create(task *model.Task) error {
 	if err := repo.db.Create(task).Error; err != nil {
@@ -34,7 +43,6 @@ func (repo *TaskMySQLRepository) Create(task *model.Task) error {
 
 // Update does a database query to update a task by ID
 func (repo *TaskMySQLRepository) Update(task *model.Task) error {
-
 	if err := repo.db.Update(task).Error; err != nil {
 		return err
 	}

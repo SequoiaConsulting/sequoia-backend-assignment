@@ -1,110 +1,114 @@
 package api
 
-// import (
-// 	"fmt"
+import (
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/model"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
 
-// 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
+	"github.com/gin-gonic/gin"
+)
 
-// 	"github.com/gin-gonic/gin"
-// 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
-// )
+type TaskAPI struct {
+	repo repository.TaskRepository
+}
 
-// type TaskAPI struct {
-// 	ur repository.TaskRepository
-// }
+// AddRoutes adds the task routes to the app.
+func (uApi *TaskAPI) AddRoutes(router *gin.Engine) {
+	tasks := router.Group("/task/")
+	tasks.GET("/get/id/:id", uApi.getTaskByID)
+	tasks.GET("/name/:name", uApi.getTaskByName)
+	tasks.POST("/", uApi.createTask)
+	tasks.PUT("/update/:id", uApi.updateTask)
+	tasks.DELETE("/delete/id/:id", uApi.deleteTask)
+}
 
-// func NewTaskAPI(ur repository.TaskRepository) *TaskAPI {
-// 	return &TaskAPI{ur}
-// }
+func NewTaskAPI(ur repository.TaskRepository) *TaskAPI {
+	return &TaskAPI{ur}
+}
 
-// func (uApi *TaskAPI) getTaskByID(c *gin.Context) {
-// 	id := c.Param("id")
+func (uApi *TaskAPI) createTask(c *gin.Context) {
+	taskCore := core.NewTaskCore(uApi.repo)
+	task := &model.Task{}
+	c.Bind(task)
+	resp, err := taskCore.Create(task)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	// THis is not the best way.
-// 	taskCore := core.NewTaskCore(uApi.ur)
+func (uApi *TaskAPI) getTaskByID(c *gin.Context) {
+	id := c.Param("id")
 
-// 	resp, err := taskCore.GetByID(id)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
+	taskCore := core.NewTaskCore(uApi.repo)
 
-// 	fmt.Printf("%v", resp)
+	resp, err := taskCore.GetByID(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	c.JSON(200, resp)
-// }
+func (uApi *TaskAPI) getTaskByName(c *gin.Context) {
+	id := c.Param("name")
 
-// func (uApi *TaskAPI) AddRoutes(router *gin.Engine) {
-// 	tasks := router.Group("/task")
-// 	tasks.GET("/:id", uApi.getTaskByID)
-// 	tasks.GET("/:name", uApi.getTaskByName)
-// 	tasks.POST("/", uApi.createTask)
-// 	tasks.PUT("/:id", uApi.updateTask)
-// 	tasks.DELETE("/:id", uApi.deleteTask)
-// }
+	taskCore := core.NewTaskCore(uApi.repo)
 
-// func (uApi *TaskAPI) createTask(c *gin.Context) {
-// 	id := c.Param("id")
+	resp, err := taskCore.GetByID(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	taskCore := core.NewTaskCore(uApi.ur)
 
-// 	resp, err := taskCore.Create(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
+func (uApi *TaskAPI) updateTask(c *gin.Context) {
+	taskCore := core.NewTaskCore(uApi.repo)
+	task := &model.Task{}
+	c.Bind(task)
+	resp, err := taskCore.Update(task)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
 
-// 	fmt.Printf("%v", resp)
 
-// 	c.JSON(200, resp)
-// }
-
-// func (uApi *TaskAPI) updateTask(c *gin.Context) {
-// 	id := c.Param("id")
-
-// 	// THis is not the best way.
-// 	taskCore := core.NewTaskCore(uApi.ur)
-
-// 	resp, err := taskCore.Update(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
-
-// func (uApi *TaskAPI) deleteTask(c *gin.Context) {
-// 	id := c.Param("id")
-
-// 	// THis is not the best way.
-// 	taskCore := core.NewTaskCore(uApi.ur)
-
-// 	resp, err := taskCore.Delete(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
-
-// func (uApi *TaskAPI) getTaskByName(c *gin.Context) {
-// 	name := c.Param("name")
-
-// 	taskCore := core.NewTaskCore(uApi.ur)
-
-// 	resp, err := taskCore.GetByName(name)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
+func (uApi *TaskAPI) deleteTask(c *gin.Context) {
+	taskCore := core.NewTaskCore(uApi.repo)
+	task := &model.Task{}
+	c.Bind(task)
+	resp, err := taskCore.Delete(task)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}

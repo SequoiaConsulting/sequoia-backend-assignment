@@ -42,10 +42,9 @@ func (core *TaskCore) Update(task *model.Task) (*model.Task, error) {
 }
 
 // Delete is the core domain layer method to delete a task
-func (core *TaskCore) Delete(id int) error {
-	task := &model.Task{ID: id}
+func (core *TaskCore) Delete(task *model.Task) (*model.Task, error) {
 	if err := core.repo.Delete(task); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return task, nil
 }

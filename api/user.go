@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/model"
 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
@@ -14,7 +15,7 @@ type UserAPI struct {
 
 // AddRoutes adds the user routes to the app.
 func (uApi *UserAPI) AddRoutes(router *gin.Engine) {
-	users := router.Group("/user/")
+	users := router.Group("/user")
 	users.GET("/get/id/:id", uApi.getUserByID)
 	users.GET("/name/:name", uApi.getUserByName)
 	users.POST("/", uApi.createUser)
@@ -62,7 +63,7 @@ func (uApi *UserAPI) getUserByID(c *gin.Context) {
 }
 
 func (uApi *UserAPI) getUserByName(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Param("name")
 
 	userCore := core.NewUserCore(uApi.repo)
 
@@ -84,7 +85,8 @@ func (uApi *UserAPI) updateUser(c *gin.Context) {
 	userCore := core.NewUserCore(uApi.repo)
 	user := &model.User{}
 	c.Bind(user)
-	resp, err := userCore.Update(user)
+	id := c.Param("id")
+	resp, err := userCore.Update(id, user)
 	if resp == nil {
 		c.JSON(404, ErrorResponse{Message: "Not Found"})
 		return
@@ -101,6 +103,7 @@ func (uApi *UserAPI) deleteUser(c *gin.Context) {
 	userCore := core.NewUserCore(uApi.repo)
 	user := &model.User{}
 	c.Bind(user)
+	
 	resp, err := userCore.Delete(user)
 	if resp == nil {
 		c.JSON(404, ErrorResponse{Message: "Not Found"})

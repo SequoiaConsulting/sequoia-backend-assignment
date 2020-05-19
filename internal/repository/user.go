@@ -9,6 +9,6 @@ type UserRepository interface {
 	GetByID(string) (*model.User, error)
 	GetByName(string) (*model.User, error)
 	Create(*model.User) error
-	Update(*model.User) error
+	Update(string, *model.User) error
 	Delete(*model.User) error
 }
