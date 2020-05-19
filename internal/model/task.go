@@ -4,7 +4,7 @@ import (
 	"time"
 	
 	"github.com/jinzhu/gorm"
-	valid "github.com/go-ozzo/ozzo-validation/v4"
+	//valid "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 // Task model to store id, title, description, due date, assigned by, assigned to, statusID, boardID
@@ -25,9 +25,9 @@ func (*Task) TableName() string {
 	return "tasks"
 }
 
-func ValidateTask(task Task) error {
-	return valid.ValidateStruct(
-		valid.Field(&task.Title, valid.Required),
-		valid.Field(&task.CreatedBy, valid.Required),
-	)
-}
+// func ValidateTask(task *Task) error {
+// 	return valid.ValidateStruct(
+// 		valid.Field(&task.Title, valid.Required),
+// 		valid.Field(&task.CreatedBy, valid.Required),
+// 	)
+// }

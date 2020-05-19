@@ -67,7 +67,7 @@ func (uApi *UserAPI) getUserByName(c *gin.Context) {
 
 	userCore := core.NewUserCore(uApi.repo)
 
-	resp, err := userCore.GetByID(id)
+	resp, err := userCore.GetByName(id)
 	if resp == nil {
 		c.JSON(404, ErrorResponse{Message: "Not Found"})
 		return

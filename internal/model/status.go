@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/jinzhu/gorm"
-	valid "github.com/go-ozzo/ozzo-validation/v4"
+	// valid "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 // Status model to store id, status name, boardID
@@ -17,10 +17,10 @@ func (*Status) TableName() string {
 	return "statuses"
 }
 
-func ValidateStatus(status Status) error {
-	return valid.ValidateStruct(
-		&status,
-		valid.Field(&status.Name, valid.Required),
-		valid.Field(&status.BoardID, valid.Required),
-	)
-}
+// func ValidateStatus(status Status) error {
+// 	return valid.ValidateStruct(
+// 		&status,
+// 		valid.Field(&status.Name, valid.Required),
+// 		valid.Field(&status.BoardID, valid.Required),
+// 	)
+// }

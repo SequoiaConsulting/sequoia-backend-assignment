@@ -21,38 +21,55 @@ func (core *BoardCore) GetByID(id string) (*model.Board, error) {
 	if err != nil {
 		return nil, err
 	}
-	return board, nil
+	return board, err
+}
+
+// GetByID is the core domain layer method to get board by the name
+func (core *BoardCore) GetByName(id string) (*model.Board, error) {
+	board, err := core.repo.GetByName(id)
+	if err != nil {
+		return nil, err
+	}
+	return board, err
 }
 
 // Create is the core domain layer method to create a board
 func (core *BoardCore) Create(board *model.Board) (*model.Board, error) {
-	// check for duplicates
 	if err := core.repo.Create(board); err != nil {
-		// throw custom error
 		return nil, err
 	}
-	//
 	return board, nil
 }
 
 // Update is the core domain layer method to update a board
-func (core *BoardCore) Update(board *model.Board) (*model.Board, error) {
+func (core *BoardCore) Update(id string, board *model.Board) (*model.Board, error) {
 	// check if board.ID  == null -> throw custom error
-	// Check if board exists (dbBoard) if dbBoard == nil
-	if err := core.repo.Update(board); err != nil {
+	if err := core.repo.Update(id, board); err != nil {
 		return nil, err
-		// better throw a custom error failedupdate
 	}
-
-	//return dbBoard
 	return board, nil
 }
 
 // Delete is the core domain layer method to delete a board
-func (core *BoardCore) Delete(id int) error {
-	board := &model.Board{ID: id}
+func (core *BoardCore) Delete(board *model.Board) (*model.Board, error) {
 	if err := core.repo.Delete(board); err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return board, nil
+}
+
+
+func (core *BoardCore) BoardUser(id string, board *model.Board, user *model.User) (*model.Board, error) {
+	if err := core.repo.BoardUser(id, board, user); err != nil {
+		return nil, err
+	}
+	return board, nil
+}
+
+
+func (core *BoardCore) BoardStatus(id string, board *model.Board, user *model.User) (*model.Board, error) {
+	if err := core.repo.BoardStatus(id, board, user); err != nil {
+		return nil, err
+	}
+	return board, nil
 }

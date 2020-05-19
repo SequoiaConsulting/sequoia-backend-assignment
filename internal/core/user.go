@@ -43,6 +43,7 @@ func (core *UserCore) Create(user *model.User) (*model.User, error) {
 
 // Update is the core domain layer method to update a user
 func (core *UserCore) Update(id string, user *model.User) (*model.User, error) {
+	// check if user.ID  == null -> throw custom error
 	if err := core.repo.Update(id, user); err != nil {
 		return nil, err
 	}

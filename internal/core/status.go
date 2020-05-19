@@ -24,6 +24,15 @@ func (core *StatusCore) GetByID(id string) (*model.Status, error) {
 	return status, err
 }
 
+// GetByID is the core domain layer method to get status by the name
+func (core *StatusCore) GetByName(id string) (*model.Status, error) {
+	status, err := core.repo.GetByName(id)
+	if err != nil {
+		return nil, err
+	}
+	return status, err
+}
+
 // Create is the core domain layer method to create a status
 func (core *StatusCore) Create(status *model.Status) (*model.Status, error) {
 	if err := core.repo.Create(status); err != nil {
@@ -33,16 +42,16 @@ func (core *StatusCore) Create(status *model.Status) (*model.Status, error) {
 }
 
 // Update is the core domain layer method to update a status
-func (core *StatusCore) Update(status *model.Status) (*model.Status, error) {
-	if err := core.repo.Update(status); err != nil {
+func (core *StatusCore) Update(id string, status *model.Status) (*model.Status, error) {
+	// check if status.ID  == null -> throw custom error
+	if err := core.repo.Update(id, status); err != nil {
 		return nil, err
 	}
 	return status, nil
 }
 
 // Delete is the core domain layer method to delete a status
-func (core *StatusCore) Delete(id int) (*model.Status, error) {
-	status := &model.Status{ID: id}
+func (core *StatusCore) Delete(status *model.Status) (*model.Status, error) {
 	if err := core.repo.Delete(status); err != nil {
 		return nil, err
 	}

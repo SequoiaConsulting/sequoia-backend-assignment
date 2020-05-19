@@ -1,107 +1,163 @@
 package api
 
-// import (
-// 	"fmt"
+import (
+	"fmt"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/model"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
 
-// 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
+	"github.com/gin-gonic/gin"
+)
 
-// 	"github.com/gin-gonic/gin"
-// 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
-// )
+type BoardAPI struct {
+	repo repository.BoardRepository
+}
 
-// type BoardAPI struct {
-// 	ur repository.BoardRepository
-// }
+// AddRoutes adds the board routes to the app.
+func (bApi *BoardAPI) AddRoutes(router *gin.Engine) {
+	boards := router.Group("/board")
+	boards.GET("/get/id/:id", bApi.getBoardByID)
+	boards.GET("/name/:name", bApi.getBoardByName)
+	boards.POST("/create", bApi.createBoard)
+	boards.PUT("/update/id/:id", bApi.updateBoard)
+	boards.DELETE("/delete/id/:id", bApi.deleteBoard)
 
-// func NewBoardAPI(ur repository.BoardRepository) *BoardAPI {
-// 	return &BoardAPI{ur}
-// }
+	boardsId := boards.Group("/id/:board_id")
+	boardsId.GET("/user/id/:user_id", bApi.boardUser)
+	boardsId.GET("/status/name/:status_name", bApi.boardStatus)
+}
 
-// func (bApi *BoardAPI) getBoardByID(c *gin.Context) {
-// 	id := c.Param("id")
+func NewBoardAPI(ur repository.BoardRepository) *BoardAPI {
+	return &BoardAPI{ur}
+}
 
-// 	boardCore := core.NewBoardCore(bApi.ur)
+func (bApi *BoardAPI) createBoard(c *gin.Context) {
+	boardCore := core.NewBoardCore(bApi.repo)
+	board := &model.Board{}
+	c.Bind(board)
+	resp, err := boardCore.Create(board)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	resp, err := boardCore.GetByID(id)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
+func (bApi *BoardAPI) getBoardByID(c *gin.Context) {
+	id := c.Param("id")
+	fmt.Printf("Hello")
 
-// 	fmt.Printf("%v", resp)
+	boardCore := core.NewBoardCore(bApi.repo)
 
-// 	c.JSON(200, resp)
-// }
+	resp, err := boardCore.GetByID(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// func (bApi *BoardAPI) AddRoutes(router *gin.Engine) {
-// 	boards := router.Group("/board")
-// 	boards.GET("/:id", bApi.getBoardByID)
-// 	boards.POST("/", bApi.createBoard)
-// 	boards.PUT("/:id", bApi.updateBoard)
-// 	boards.DELETE("/:id", bApi.deleteBoard)
-// 	boards.GET("/:name", bApi.getBoardByName)
-// }
+func (bApi *BoardAPI) getBoardByName(c *gin.Context) {
+	id := c.Param("name")
+	fmt.Printf("%s", id)
 
-// func (bApi *BoardAPI) createBoard(c *gin.Context) {
-// 	id := c.Param("id")
+	boardCore := core.NewBoardCore(bApi.repo)
 
-// 	boardCore := core.NewBoardCore(bApi.ur)
+	resp, err := boardCore.GetByName(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	resp, err := boardCore.Create(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
 
-// 	fmt.Printf("%v", resp)
+func (bApi *BoardAPI) updateBoard(c *gin.Context) {
+	boardCore := core.NewBoardCore(bApi.repo)
+	board := &model.Board{}
+	c.Bind(board)
+	id := c.Param("id")
+	resp, err := boardCore.Update(id, board)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
 
-// 	c.JSON(200, resp)
-// }
 
-// func (bApi *BoardAPI) updateBoard(c *gin.Context) {
-// 	id := c.Param("id")
+func (bApi *BoardAPI) deleteBoard(c *gin.Context) {
+	boardCore := core.NewBoardCore(bApi.repo)
+	board := &model.Board{}
+	c.Bind(board)
+	
+	resp, err := boardCore.Delete(board)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
 
-// 	boardCore := core.NewBoardCore(bApi.ur)
+func (bApi *BoardAPI) boardStatus(c *gin.Context) {
+	boardCore := core.NewBoardCore(bApi.repo)
+	board := &model.Board{}
+	user := &model.User{}
+	c.Bind(board)
+	c.Bind(user)
+	id := c.Param("id")
+	
+	resp, err := boardCore.BoardStatus(id, board, user)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
 
-// 	resp, err := boardCore.Update(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
-
-// func (bApi *BoardAPI) deleteBoard(c *gin.Context) {
-// 	id := c.Param("id")
-
-// 	boardCore := core.NewBoardCore(bApi.ur)
-
-// 	resp, err := boardCore.Delete(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
-
-// func (bApi *BoardAPI) getBoardByName(c *gin.Context) {
-// 	name := c.Param("name")
-
-// 	boardCore := core.NewBoardCore(bApi.ur)
-
-// 	resp, err := boardCore.GetByName(name)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
+func (bApi *BoardAPI) boardUser(c *gin.Context) {
+	boardCore := core.NewBoardCore(bApi.repo)
+	board := &model.Board{}
+	user := &model.User{}
+	c.Bind(board)
+	c.Bind(user)
+	id := c.Param("id")
+	
+	resp, err := boardCore.BoardUser(id, board, user)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
