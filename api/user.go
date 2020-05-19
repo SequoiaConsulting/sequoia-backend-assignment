@@ -14,12 +14,12 @@ type UserAPI struct {
 
 // AddRoutes adds the user routes to the app.
 func (uApi *UserAPI) AddRoutes(router *gin.Engine) {
-	users := router.Group("/user")
-	users.GET("/:id", uApi.getUserByID)
-	// users.GET("/:id", uApi.getUserByName)
+	users := router.Group("/user/")
+	users.GET("/get/id/:id", uApi.getUserByID)
+	users.GET("/name/:name", uApi.getUserByName)
 	users.POST("/", uApi.createUser)
-	// users.PUT("/:id", uApi.updateUser)
-	// users.DELETE("/:id", uApi.deleteUser)
+	users.PUT("/update/:id", uApi.updateUser)
+	users.DELETE("/delete/id/:id", uApi.deleteUser)
 }
 
 func NewUserAPI(ur repository.UserRepository) *UserAPI {
@@ -30,21 +30,7 @@ func (uApi *UserAPI) createUser(c *gin.Context) {
 	userCore := core.NewUserCore(uApi.repo)
 	user := &model.User{}
 	c.Bind(user)
-
-	user, err := userCore.Create(user)
-	if err != nil {
-		c.JSON(500, nil)
-		return
-	}
-	c.JSON(200, user)
-}
-
-func (uApi *UserAPI) getUserByID(c *gin.Context) {
-	id := c.Param("id")
-
-	userCore := core.NewUserCore(uApi.repo)
-
-	resp, err := userCore.GetByID(id) // Check this
+	resp, err := userCore.Create(user)
 	if resp == nil {
 		c.JSON(404, ErrorResponse{Message: "Not Found"})
 		return
@@ -57,55 +43,72 @@ func (uApi *UserAPI) getUserByID(c *gin.Context) {
 	return
 }
 
-// 	fmt.Printf("%v", resp)
+func (uApi *UserAPI) getUserByID(c *gin.Context) {
+	id := c.Param("id")
 
-// 	c.JSON(200, resp)
-// }
+	userCore := core.NewUserCore(uApi.repo)
 
-// func (uApi *UserAPI) updateUser(c *gin.Context) {
-// 	id := c.Param("id")
+	resp, err := userCore.GetByID(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	userCore := core.NewUserCore(uApi.ur)
+func (uApi *UserAPI) getUserByName(c *gin.Context) {
+	id := c.Param("id")
 
-// 	resp, err := userCore.Update(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
+	userCore := core.NewUserCore(uApi.repo)
 
-// 	fmt.Printf("%v", resp)
+	resp, err := userCore.GetByID(id)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+	return
+}
 
-// 	c.JSON(200, resp)
-// }
 
-// func (uApi *UserAPI) deleteUser(c *gin.Context) {
-// 	id := c.Param("id")
+func (uApi *UserAPI) updateUser(c *gin.Context) {
+	userCore := core.NewUserCore(uApi.repo)
+	user := &model.User{}
+	c.Bind(user)
+	resp, err := userCore.Update(user)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}
 
-// 	userCore := core.NewUserCore(uApi.ur)
 
-// 	resp, err := userCore.Delete(id, c)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
-
-// func (uApi *UserAPI) getUserByName(c *gin.Context) {
-// 	name := c.Param("name")
-
-// 	userCore := core.NewUserCore(uApi.ur)
-
-// 	resp, err := userCore.GetByName(name)
-// 	if err != nil {
-// 		c.JSON(500, nil)
-// 		return
-// 	}
-
-// 	fmt.Printf("%v", resp)
-
-// 	c.JSON(200, resp)
-// }
+func (uApi *UserAPI) deleteUser(c *gin.Context) {
+	userCore := core.NewUserCore(uApi.repo)
+	user := &model.User{}
+	c.Bind(user)
+	resp, err := userCore.Delete(user)
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
+		return
+	}
+	if err != nil {
+		c.JSON(500, ErrorResponse{Message: err.Error()})
+		return
+	}
+	c.JSON(200, resp)
+}

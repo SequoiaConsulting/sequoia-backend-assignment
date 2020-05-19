@@ -24,6 +24,15 @@ func (repo *UserMySQLRepository) GetByID(id string) (*model.User, error) {
 	return user, nil
 }
 
+// GetByID does a database query to get a user by ID
+func (repo *UserMySQLRepository) GetByName(id string) (*model.User, error) {
+	user := &model.User{}
+	if err := repo.db.Where("id = ?", id).First(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // Create does a database query to create a user
 func (repo *UserMySQLRepository) Create(user *model.User) error {
 	if err := repo.db.Create(user).Error; err != nil {
