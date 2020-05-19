@@ -2,58 +2,48 @@ package mysql
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/gin-gonic/gin"
 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/model"
 )
 
-// UserMySQLRepository stores database connection 
+// UserMySQLRepository stores database connection
 type UserMySQLRepository struct {
-	conn *gorm.DB
+	db *gorm.DB
 }
 
 // NewUserMySQLRepository accepts UserMySQLRepository and returns UserMySQLRepository
-func NewUserMySQLRepository(conn *gorm.DB) *UserMySQLRepository {
-	return &UserMySQLRepository{conn}
+func NewUserMySQLRepository(db *gorm.DB) *UserMySQLRepository {
+	return &UserMySQLRepository{db}
 }
 
 // GetByID does a database query to get a user by ID
-func (ur *UserMySQLRepository) GetByID(id string) (*model.User, error) {
-	db := ur.conn
+func (repo *UserMySQLRepository) GetByID(id string) (*model.User, error) {
 	user := &model.User{}
-	if err := db.Where("id = ?", id).First(user).Error; err != nil {
+	if err := repo.db.Where("id = ?", id).First(user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
 // Create does a database query to create a user
-func (ur *UserMySQLRepository) Create(fields *model.User, c *gin.Context) (*model.User, error) {
-	db := ur.conn
-	user := &model.User{}
-	// Validate input
-	if err := c.ShouldBindJSON(user); err != nil {
-		return nil, err
+func (repo *UserMySQLRepository) Create(user *model.User) error {
+	if err := repo.db.Create(user).Error; err != nil {
+		return err
 	}
-	db.Create(fields)
-	return user, nil
+	return nil
 }
 
 // Update does a database query to update a user by ID
-func (ur *UserMySQLRepository) Update(id string, c *gin.Context) (*model.User, error) {
-	db := ur.conn
-	user := &model.User{}
-	if err := db.Where("id = ?", c.Param("id")).Update(user).Error; err != nil {
-		return nil, err
+func (repo *UserMySQLRepository) Update(user *model.User) error {
+	if err := repo.db.Update(user).Error; err != nil {
+		return err
 	}
-	return user, nil
+	return nil
 }
 
 // Delete does a database query to delete a user by ID
-func (ur *UserMySQLRepository) Delete(id string, c *gin.Context) (*model.User, error) {
-	db := ur.conn
-	user := &model.User{}
-	if err := db.Where("id = ?", c.Param("id")).First(user).Error; err != nil {
-		return nil, err
+func (repo *UserMySQLRepository) Delete(user *model.User) error {
+	if err := repo.db.Delete(user).Error; err != nil {
+		return err
 	}
-	return user, nil
+	return nil
 }

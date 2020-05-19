@@ -1,94 +1,111 @@
 package api
 
 import (
-	"fmt"
-
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
+	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/model"
 	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/repository"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sayanibhattacharjee/sequoia-backend-assignment/internal/core"
 )
 
 type UserAPI struct {
-	ur repository.UserRepository
+	repo repository.UserRepository
+}
+
+// AddRoutes adds the user routes to the app.
+func (uApi *UserAPI) AddRoutes(router *gin.Engine) {
+	users := router.Group("/user")
+	users.GET("/:id", uApi.getUserByID)
+	// users.GET("/:id", uApi.getUserByName)
+	users.POST("/", uApi.createUser)
+	// users.PUT("/:id", uApi.updateUser)
+	// users.DELETE("/:id", uApi.deleteUser)
 }
 
 func NewUserAPI(ur repository.UserRepository) *UserAPI {
 	return &UserAPI{ur}
 }
 
-func (uapi *UserAPI) getUser(c *gin.Context) {
-	id := c.Param("id")
+func (uApi *UserAPI) createUser(c *gin.Context) {
+	userCore := core.NewUserCore(uApi.repo)
+	user := &model.User{}
+	c.Bind(user)
 
-	// THis is not the best way.
-	userCore := core.NewUserCore(uapi.ur)
-
-	resp, err := userCore.GetByID(id)
+	user, err := userCore.Create(user)
 	if err != nil {
 		c.JSON(500, nil)
 		return
 	}
-
-	fmt.Printf("%v", resp)
-
-	c.JSON(200, resp)
+	c.JSON(200, user)
 }
 
-func (uapi *UserAPI) AddRoutes(router *gin.Engine) {
-	users := router.Group("/user")
-	users.GET("/:id", uapi.getUser)
-	users.POST("/", uapi.createUser)
-	users.PUT("/:id", uapi.updateUser)
-	users.DELETE("/:id", uapi.deleteUser)
-}
-
-func (uapi *UserAPI) createUser(c *gin.Context) {
+func (uApi *UserAPI) getUserByID(c *gin.Context) {
 	id := c.Param("id")
 
-	// THis is not the best way.
-	userCore := core.NewUserCore(uapi.ur)
+	userCore := core.NewUserCore(uApi.repo)
 
-	resp, err := userCore.GetByID(id)
-	if err != nil {
-		c.JSON(500, nil)
+	resp, err := userCore.GetByID(id) // Check this
+	if resp == nil {
+		c.JSON(404, ErrorResponse{Message: "Not Found"})
 		return
 	}
-
-	fmt.Printf("%v", resp)
-
-	c.JSON(200, resp)
-}
-
-func (uapi *UserAPI) updateUser(c *gin.Context) {
-	id := c.Param("id")
-
-	// THis is not the best way.
-	userCore := core.NewUserCore(uapi.ur)
-
-	resp, err := userCore.GetByID(id)
 	if err != nil {
-		c.JSON(500, nil)
+		c.JSON(500, ErrorResponse{Message: err.Error()})
 		return
 	}
-
-	fmt.Printf("%v", resp)
-
 	c.JSON(200, resp)
+	return
 }
 
-func (uapi *UserAPI) deleteUser(c *gin.Context) {
-	id := c.Param("id")
+// 	fmt.Printf("%v", resp)
 
-	// THis is not the best way.
-	userCore := core.NewUserCore(uapi.ur)
+// 	c.JSON(200, resp)
+// }
 
-	resp, err := userCore.GetByID(id)
-	if err != nil {
-		c.JSON(500, nil)
-		return
-	}
+// func (uApi *UserAPI) updateUser(c *gin.Context) {
+// 	id := c.Param("id")
 
-	fmt.Printf("%v", resp)
+// 	userCore := core.NewUserCore(uApi.ur)
 
-	c.JSON(200, resp)
-}
+// 	resp, err := userCore.Update(id, c)
+// 	if err != nil {
+// 		c.JSON(500, nil)
+// 		return
+// 	}
+
+// 	fmt.Printf("%v", resp)
+
+// 	c.JSON(200, resp)
+// }
+
+// func (uApi *UserAPI) deleteUser(c *gin.Context) {
+// 	id := c.Param("id")
+
+// 	userCore := core.NewUserCore(uApi.ur)
+
+// 	resp, err := userCore.Delete(id, c)
+// 	if err != nil {
+// 		c.JSON(500, nil)
+// 		return
+// 	}
+
+// 	fmt.Printf("%v", resp)
+
+// 	c.JSON(200, resp)
+// }
+
+// func (uApi *UserAPI) getUserByName(c *gin.Context) {
+// 	name := c.Param("name")
+
+// 	userCore := core.NewUserCore(uApi.ur)
+
+// 	resp, err := userCore.GetByName(name)
+// 	if err != nil {
+// 		c.JSON(500, nil)
+// 		return
+// 	}
+
+// 	fmt.Printf("%v", resp)
+
+// 	c.JSON(200, resp)
+// }
