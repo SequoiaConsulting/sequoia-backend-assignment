@@ -68,6 +68,6 @@
   
 
  
-_In case of any queries, mail to Karthikeyan NG <karthikeyan.ng@sequoia.com> or Indrajeet Kumar <indrajeet@sequoia.com>. We'll revert to you with the clarifications_
+_In case of any queries, mail to Vishwa Bhat <vishwa.bhat@sequoia.com> or Indrajeet Kumar <indrajeet@sequoia.com>. We'll revert to you with the clarifications_
  
  
